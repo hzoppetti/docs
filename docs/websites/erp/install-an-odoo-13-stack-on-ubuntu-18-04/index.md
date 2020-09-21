@@ -2,29 +2,50 @@
 author:
   name: Linode Community
   email: docs@linode.com
-description: 'Odoo is an open-source suite of over 10,000 business applications. Odoo allows administrators to install, configure and customize any application to satisfy their needs. This guide covers how to install and configure Odoo using Git source so it will be easy to upgrade and maintain.'
-og_description: 'Odoo is an open-source suite of over 10,000 business applications. Odoo allows administrators to install, configure and customize any application to satisfy their needs. This guide covers how to install and configure Odoo using Git source so it will be easy to upgrade and maintain.'
-keywords: ["Odoo 13 install ubuntu 18.04", "install open source cms erp ubuntu"]
+description: >-
+  Odoo is an open-source suite of over 10,000 business applications. Odoo allows
+  administrators to install, configure and customize any application to satisfy
+  their needs. This guide covers how to install and configure Odoo using Git
+  source so it will be easy to upgrade and maintain.
+og_description: >-
+  Odoo is an open-source suite of over 10,000 business applications. Odoo allows
+  administrators to install, configure and customize any application to satisfy
+  their needs. This guide covers how to install and configure Odoo using Git
+  source so it will be easy to upgrade and maintain.
+keywords:
+  - Odoo 13 install ubuntu 18.04
+  - install open source cms erp ubuntu
 license: '[CC BY-ND 4.0](https://creativecommons.org/licenses/by-nd/4.0)'
-published: 2020-09-17
-modified: 2020-09-17
+published: true
+modified: {}
 modified_by:
   name: Linode
-title: 'Install an Odoo 13 Stack on Ubuntu 18.04'
+title: Install an Odoo 13 Stack on Ubuntu 18.04
 h1_title: Installing an Odoo 13 Stack on Ubuntu 18.04
 image: install-an-odoo-13-stack-on-ubuntu-18-04-using-linode.png
 contributor:
   name: Damaso Sanoja
-  link: https://twitter.com/damasosanoja
-aliases: ['/websites/cms/install-an-odoo-13-stack-on-ubuntu-18-04/']
+  link: 'https://twitter.com/damasosanoja'
+aliases:
+  - /websites/cms/install-an-odoo-13-stack-on-ubuntu-18-04/
 external_resources:
   - '[Odoo User Documentation](https://www.odoo.com/documentation/user/13.0/)'
   - '[Odoo Developer Documentation](https://www.odoo.com/documentation/13.0)'
-  - '[PostgreSQL 10 Documentation](https://www.postgresql.org/docs/10/static/index.html)'
-  - '[Install an Odoo 11 Stack on Ubuntu 16.04 using Linode](https://www.linode.com/docs/websites/erp/install-an-odoo-11-stack-on-ubuntu-16-04)'
-  - '[Install an SSL certificate with LetsEncrypt](/docs/security/ssl/install-lets-encrypt-to-create-ssl-certificates)'
-  - '[How to Set up tinc, a Peer-to-Peer VPN](/docs/networking/vpn/how-to-set-up-tinc-peer-to-peer-vpn/)'
-  - '[Using Terraform to Provision Linode Environments](/docs/applications/configuration-management/how-to-build-your-infrastructure-using-terraform-and-linode/)'
+  - >-
+    [PostgreSQL 10
+    Documentation](https://www.postgresql.org/docs/10/static/index.html)
+  - >-
+    [Install an Odoo 11 Stack on Ubuntu 16.04 using
+    Linode](https://www.linode.com/docs/websites/erp/install-an-odoo-11-stack-on-ubuntu-16-04)
+  - >-
+    [Install an SSL certificate with
+    LetsEncrypt](/docs/security/ssl/install-lets-encrypt-to-create-ssl-certificates)
+  - >-
+    [How to Set up tinc, a Peer-to-Peer
+    VPN](/docs/networking/vpn/how-to-set-up-tinc-peer-to-peer-vpn/)
+  - >-
+    [Using Terraform to Provision Linode
+    Environments](/docs/applications/configuration-management/how-to-build-your-infrastructure-using-terraform-and-linode/)
 ---
 
 ## What is Odoo?
@@ -218,11 +239,11 @@ It's considered a best practice to isolate Odoo's Python modules from the module
 
 1. Create a new `virtualenv` environment for Odoo 13 application:
 
-        python3 -m venv /tmp/odoo-env
+        python3 -m venv /home/<your_user>/odoo-env
 
 2. Activate the `odoo-env` virtual environment you created in the previous step:
 
-        source /tmp/odoo-env/bin/activate
+        source /home/<your_user>/odoo-env/bin/activate
 
 3. Update `pip3` using the following command:
 
@@ -235,7 +256,7 @@ It's considered a best practice to isolate Odoo's Python modules from the module
 Let's review the the virtual environment creation:
 
 * `python3 -m venv`: Runs `venv` module using Python 3, this module is in charge of creating the virtual environment.
-* `/tmp/odoo-env`: Indicates the path used for the virtual Python environment. For the purpose of this guide, `tmp` directory was used but you can change it to any location that suits your needs as long as you remember to grant the `odoo` user with proper permissions afterward.
+* `/home/<your_user>/odoo-env`: Indicates the path used for the virtual Python environment. For the purpose of this guide, the `home` directory of the current user was used but you can change it to any location that suits your needs as long as you remember to grant the `odoo` user with proper permissions afterward.
 
 ### Install Odoo's Python modules
 
@@ -244,7 +265,11 @@ Let's review the the virtual environment creation:
         pip3 install -r /opt/odoo/doc/requirements.txt
         pip3 install -r /opt/odoo/requirements.txt
 
-4. Exit from the Python virtual environment by issuing the command:
+2. Check that all requirements are properly installed in your virtual environment:
+
+        pip3 list
+
+3. Exit from the Python virtual environment by issuing the command:
 
         deactivate
 
@@ -289,7 +314,7 @@ PermissionsStartOnly=true
 SyslogIdentifier=odoo-server
 User=odoo
 Group=odoo
-ExecStart=/tmp/odoo-env/bin/python3 /opt/odoo/odoo-bin --config=/etc/odoo-server.conf --addons-path=/opt/odoo/addons/
+ExecStart=/home/<your_user>/odoo-env/bin/python3 /opt/odoo/odoo-bin --config=/etc/odoo-server.conf --addons-path=/opt/odoo/addons/
 WorkingDirectory=/opt/odoo/
 StandardOutput=journal+console
 
@@ -306,7 +331,7 @@ WantedBy=multi-user.target
 
 2.  Since the `odoo` user runs the application, change its ownership accordingly:
 
-        sudo chown -R odoo: /opt/odoo/
+        sudo chown -R odoo: /opt/odoo/ && sudo chown -R odoo: /home/<your_user>/odoo-env
 
 3.  Protect the server configuration file. Change its ownership and permissions so no other non-root user can access it:
 
